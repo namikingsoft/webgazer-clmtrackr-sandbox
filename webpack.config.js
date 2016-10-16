@@ -28,6 +28,10 @@ module.exports = {
     modulesDirectories: ['node_modules'],
     root: path.resolve(__dirname, 'src'),
   },
+  node: {
+    fs: 'empty',
+    net: 'empty',
+  },
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(),
     new HtmlWebpackPlugin({
