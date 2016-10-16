@@ -6,7 +6,6 @@ module.exports = {
   devtool: 'cheap-module-eval-source-map',
   entry: {
     app: [
-      'webpack-hot-middleware/client',
       './src/index',
     ],
   },
@@ -31,7 +30,6 @@ module.exports = {
   },
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       title: 'App',
