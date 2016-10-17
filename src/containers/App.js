@@ -2,8 +2,9 @@
 import React, { Component } from 'react';
 import EmotionGraph from 'components/EmotionGraph';
 import EmotionDistribute from 'components/EmotionDistribute';
-import { EmotionClassifier } from 'utils/clmtrackr';
-import emotionModel from 'fixtures/emotion-model';
+import { calcEmotionParameter } from 'utils/clmtrackr';
+import { train, predict } from 'utils/regression';
+import * as emotion from 'fixtures/emotion-data';
 import type { WebGazer } from 'types/webgazer';
 import type { EmotionPrediction } from 'types/clmtrackr';
 import { startWebGazer, showAdjuster } from 'utils/webgazer';
@@ -30,11 +31,10 @@ class App extends Component {
     const webgazer = await startWebGazer();
     showAdjuster(webgazer);
     const clm = webgazer.getTracker().clm;
-    const classifier = new EmotionClassifier(emotionModel);
     webgazer.setGazeListener(() => {
       const parameters = clm.getCurrentParameters();
       this.setState({
-        emotionPrediction: classifier.predictMean(parameters),
+        // emotionPrediction: classifier.predictMean(parameters),
       });
     });
     return webgazer;
@@ -44,6 +44,24 @@ class App extends Component {
   = () => webgazer => {
     const clm = webgazer.getTracker().clm;
     console.log(clm.getCurrentParameters());
+  };
+
+  test = () => {
+    const { webgazer } = this.props;
+    const clm = webgazer.getTracker().clm;
+    const xss = [];
+    const yss = [];
+    webgazer.setGazeListener(() => {
+      const position = clm.getCurrentPosition();
+      xss.push(calcEmotionParameter(position));
+      yss.push([1, 0]);
+      if (xss.length >= 10) {
+        console.log(JSON.stringify(xss));
+        webgazer.clearGazeListener();
+        const model = train(xss)(yss);
+        console.log(model);
+      }
+    });
   };
 
   render = () => {
