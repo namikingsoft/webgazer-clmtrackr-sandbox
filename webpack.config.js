@@ -1,9 +1,11 @@
 const path = require('path');
 const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const postcss = require('./webpack.postcss');
 
 module.exports = {
-  devtool: 'cheap-module-eval-source-map',
+  devtool: 'source-map',
   entry: {
     app: [
       './src/index',
@@ -21,6 +23,13 @@ module.exports = {
         loaders: ['babel'],
         exclude: /node_modules/,
       },
+      {
+        test: /\.css$/,
+        exclude: /node_modules/,
+        loader: ExtractTextPlugin.extract('style',
+          'css?module&sourceMap&importLoaders=1!postcss'
+        ),
+      },
     ],
   },
   resolve: {
@@ -34,10 +43,12 @@ module.exports = {
   },
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(),
+    new ExtractTextPlugin('style.bundle.css'),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       title: 'App',
       mobile: true,
     }),
   ],
+  postcss,
 };

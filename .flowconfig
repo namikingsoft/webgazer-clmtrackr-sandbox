@@ -6,6 +6,8 @@
 [libs]
 
 [options]
+module.system=haste
+module.name_mapper='.*\.s?css' -> 'CSSModule'
 module.system.node.resolve_dirname=src
 munge_underscores=true
 esproposal.class_static_fields=enable
