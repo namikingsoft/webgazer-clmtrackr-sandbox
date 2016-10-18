@@ -3,8 +3,9 @@ import React, { Component } from 'react';
 import { range } from 'ramda';
 import EmotionGraph from 'components/EmotionGraph';
 import EmotionDistribute from 'components/EmotionDistribute';
+import UserInterface from 'components/UserInterface';
 import { predictEmotions, scoreEmotions } from 'utils/emotion';
-import { startWebGazer, showAdjuster } from 'utils/webgazer';
+import { startWebGazer, showAdjuster, hideAdjuster } from 'utils/webgazer';
 import type { EmotionPrediction } from 'types/emotion';
 import type { WebGazer } from 'types/webgazer';
 import type { Position } from 'types/clmtrackr';
@@ -150,7 +151,7 @@ class App extends Component {
     return webgazer;
   };
 
-  test: (_:WebGazer) => void
+  handleTrace: (_:WebGazer) => void
   = webgazer => {
     const clm = webgazer.getTracker().clm;
     const positions = [];
@@ -184,7 +185,11 @@ class App extends Component {
           yLength={yLength}
           data={emotionTable.map(xs => xs.map(x => Math.floor(x)))}
         />
-        <button onClick={() => this.test(webgazer)}>test</button>
+        <UserInterface
+          onShow={() => showAdjuster(webgazer)}
+          onHide={() => hideAdjuster(webgazer)}
+          onTrace={() => this.handleTrace(webgazer)}
+        />
       </div>
     );
   };

@@ -1,17 +1,18 @@
 @import '../variables';
 
 .my {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   left: 0;
-  width: 50%;
+  width: 35%;
   z-index: 65535;
   pointer-events: none;
 
   &Graph {
-    background-color: #c00;
-    font-size: 9px;
-    margin: 10px;
-    padding: 5px;
+    background-color: #aaa;
+    font-size: 8px;
+    margin: 7px;
+    transition: width 0.2s linear;
+    box-sizing: border-box;
   }
 }
