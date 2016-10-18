@@ -63,5 +63,8 @@
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
     "simple-statistics": "^2.1.0"
+  },
+  "engines": {
+    "node": "6.8.1"
   }
 }
