@@ -2,4 +2,5 @@
 
 .my {
   position: absolute;
+  pointer-events: none;
 }

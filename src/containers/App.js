@@ -54,7 +54,7 @@ class App extends Component {
         const [x, y] = this.convertTablePoint(gaze.x, gaze.y);
         const score = scoreEmotions(emotionPredictions);
         if (emotionTable) {
-          /* eslint-disable */
+          /* eslint-disable */ // TODO
           if (emotionTable[x]) {
             if (emotionTable[x][y] !== undefined)
               emotionTable[x][y] += score;
@@ -152,23 +152,16 @@ class App extends Component {
 
   test: (_:WebGazer) => void
   = webgazer => {
-    console.log(webgazer);
-    /*
     const clm = webgazer.getTracker().clm;
-    const xss = [];
-    const yss = [];
-    webgazer.setGazeListener(() => {
+    const positions = [];
+    this.addGazeListener('Test')(() => {
       const position = clm.getCurrentPosition();
-      xss.push(calcEmotionParameter(position));
-      yss.push([1, 0]);
-      if (xss.length >= 10) {
-        console.log(JSON.stringify(xss));
-        webgazer.clearGazeListener();
-        const model = train(xss)(yss);
-        console.log(model);
+      positions.push(position);
+      if (positions.length >= 10) {
+        console.log(JSON.stringify(positions));
+        this.removeGazeListener('Test');
       }
     });
-    */
   };
 
   render = () => {
