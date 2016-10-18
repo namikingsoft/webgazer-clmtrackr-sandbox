@@ -4,11 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "heroku-postbuild": "npm run build",
     "type": "flow",
     "lint": "eslint src",
     "build": "NODE_ENV=production webpack --config webpack.config.prod.js",
     "nodemon": "NODE_PATH=src nodemon -e js -w server",
     "start": "npm run nodemon -- --exec babel-node server/index.js",
+    "start:heroku": "babel-node server/heroku.js",
     "test": "npm run type && npm run lint"
   },
   "author": "",
