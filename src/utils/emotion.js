@@ -52,14 +52,13 @@ export const predictEmotions: (_:Position) => Array<EmotionPrediction>
   },
 ];
 
-/*
-    const { webgazer } = this.props;
-    const clm = webgazer.getTracker().clm;
-    webgazer.setGazeListener(() => {
-      const position = clm.getCurrentPosition();
-      if (position) {
-        const parameters = calcEmotionParameter(position);
-        console.log(predict(parameters)(model));
-      }
-    });
-*/
+export const scoreEmotions: (_:Array<EmotionPrediction>) => number
+= emotions => emotions.reduce((acc, x) => {
+  switch (x.name) {
+    case 'happy': return acc + x.value;
+    case 'angry': return acc - x.value;
+    case 'unhappy': return acc - x.value;
+    case 'suprise': return acc + x.value;
+    default: return acc;
+  }
+}, 0);

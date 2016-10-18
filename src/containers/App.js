@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { range } from 'ramda';
 import EmotionGraph from 'components/EmotionGraph';
 import EmotionDistribute from 'components/EmotionDistribute';
-import { predictEmotions } from 'utils/emotion';
+import { predictEmotions, scoreEmotions } from 'utils/emotion';
 import { startWebGazer, showAdjuster } from 'utils/webgazer';
 import type { EmotionPrediction } from 'types/emotion';
 import type { WebGazer } from 'types/webgazer';
@@ -25,13 +25,15 @@ type GazeCallback = (_:GazeData) => void;
 class App extends Component {
   state: {
     webgazer?: WebGazer;
-    emotionPredictions?: Array<EmotionPrediction>,
-    emotionTable?: Array<Array<number>>,
+    emotionPredictions: Array<EmotionPrediction>,
+    emotionTable: Array<Array<number>>,
     screenWidth: number,
     screenHeight: number,
     xLength: number,
     yLength: number,
   } = {
+    emotionPredictions: [],
+    emotionTable: [[]],
     screenWidth: window.innerWidth,
     screenHeight: window.innerHeight,
     xLength: 1,
@@ -42,14 +44,49 @@ class App extends Component {
 
   componentWillMount = () => {
     this.startWebGazer().then(webgazer => this.setState({ webgazer }));
-    this.addGazeListener('EmotionGraph')(data => {
-      if (data.clm) {
-        const emotionPredictions = predictEmotions(data.clm.position);
-        this.setState({ emotionPredictions });
+    this.addGazeListener('EmotionGraph')(({ gaze, clm }) => {
+      let emotionPredictions = [];
+      const emotionTable = this.state.emotionTable;
+      if (clm) {
+        emotionPredictions = predictEmotions(clm.position);
       }
-      if (data.gaze) {
-        console.log(this.convertTablePoint(data.gaze.x, data.gaze.y));
+      if (gaze) {
+        const [x, y] = this.convertTablePoint(gaze.x, gaze.y);
+        const score = scoreEmotions(emotionPredictions);
+        if (emotionTable) {
+          /* eslint-disable */
+          if (emotionTable[x]) {
+            if (emotionTable[x][y] !== undefined)
+              emotionTable[x][y] += score;
+            if (emotionTable[x][y-1] !== undefined)
+              emotionTable[x][y-1] += score;
+            if (emotionTable[x][y+1] !== undefined)
+              emotionTable[x][y+1] += score;
+          }
+          if (emotionTable[x-1]) {
+            if (emotionTable[x-1][y] !== undefined)
+              emotionTable[x-1][y] += score;
+            if (emotionTable[x-1][y-1] !== undefined)
+              emotionTable[x-1][y-1] += score;
+            if (emotionTable[x-1][y+1] !== undefined)
+              emotionTable[x-1][y+1] += score;
+          }
+          if (emotionTable[x+1]) {
+            if (emotionTable[x+1][y] !== undefined)
+              emotionTable[x+1][y] += score;
+            if (emotionTable[x+1][y-1] !== undefined)
+              emotionTable[x+1][y-1] += score;
+            if (emotionTable[x+1][y+1] !== undefined)
+              emotionTable[x+1][y+1] += score;
+          }
+          /* eslint-enable */
+        }
       }
+      this.setState({
+        ...this.state,
+        emotionTable,
+        emotionPredictions,
+      });
     });
     this.handleResizeWindow(null);
     window.addEventListener('resize', this.handleResizeWindow);
@@ -100,7 +137,7 @@ class App extends Component {
   startWebGazer: (_:void) => Promise<WebGazer>
   = async () => {
     const webgazer = await startWebGazer();
-    // showAdjuster(webgazer);
+    showAdjuster(webgazer);
     const clm = webgazer.getTracker().clm;
     webgazer.setGazeListener(data => {
       const position = clm.getCurrentPosition();
@@ -152,7 +189,7 @@ class App extends Component {
           height={screenHeight}
           xLength={xLength}
           yLength={yLength}
-          data={emotionTable}
+          data={emotionTable.map(xs => xs.map(x => Math.floor(x)))}
         />
         <button onClick={() => this.test(webgazer)}>test</button>
       </div>

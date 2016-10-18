@@ -5,25 +5,24 @@ import style from 'styles/components/EmotionCell.css';
 
 type Props = {
   className?: string,
-  x: number,
-  y: number,
+  top: number,
+  left: number,
   width: number,
   height: number,
+  score: number,
 };
 
 export default class EmotionCell extends PureComponent {
   props: Props;
 
   render() {
-    const { className, x, y, width, height } = this.props;
+    const { className, top, left, width, height, score } = this.props;
+    const opacity = Math.abs(score) / 20;
+    const backgroundColor = score > 0 ? 'red' : 'blue';
     return (
-      <rect
+      <div
         className={classnames(className, style.my)}
-        x={x}
-        y={y}
-        width={width}
-        height={height}
-        fillOpacity="0.2"
+        style={{ top, left, width, height, opacity, backgroundColor }}
       />
     );
   }

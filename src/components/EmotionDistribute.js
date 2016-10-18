@@ -23,22 +23,23 @@ export default class EmotionDistribute extends Component {
   }
 
   render() {
-    const { className, width, height, xLength, yLength } = this.props;
+    const { className, width, height, xLength, yLength, data } = this.props;
     const w = width / xLength;
     const h = height / yLength;
     return (
-      <svg className={classnames(className, style.my)}>
+      <div className={classnames(className, style.my)}>
         {range(0, xLength).map(x =>
          range(0, yLength).map(y =>
            <EmotionCell
              key={`${x}-${y}`}
-             x={x * w}
-             y={y * h}
+             top={y * h}
+             left={x * w}
              width={w}
              height={h}
+             score={data[x][y] || 0}
            />
-        ))};
-      </svg>
+        ))}
+      </div>
     );
   }
 }
