@@ -7,7 +7,6 @@ type Props = {
   className?: string,
   onShow: (_:Event) => void,
   onHide: (_:Event) => void,
-  onReset: (_:Event) => void,
   onTrace: (_:Event) => void,
 };
 
