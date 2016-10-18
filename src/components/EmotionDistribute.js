@@ -12,6 +12,7 @@ type Props = {
   height: number,
   xLength: number,
   yLength: number,
+  data: Array<Array<number>>,
 };
 
 export default class EmotionDistribute extends Component {
