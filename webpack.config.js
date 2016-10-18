@@ -4,6 +4,8 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const postcss = require('./webpack.postcss');
 
+const { NODE_ENV } = process.env;
+
 module.exports = {
   devtool: 'source-map',
   entry: {
@@ -43,6 +45,11 @@ module.exports = {
   },
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify(NODE_ENV),
+      },
+    }),
     new ExtractTextPlugin('style.bundle.css'),
     new HtmlWebpackPlugin({
       filename: 'index.html',
