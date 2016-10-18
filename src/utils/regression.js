@@ -1,7 +1,7 @@
 // @flow
 import { mean, variance } from 'simple-statistics';
 import { LogisticRegression } from 'machine_learning';
-import type { Matrix } from 'types/canvas';
+import type { Matrix } from 'types/math';
 
 const normalize: (_:Array<number>) => Array<number>
 = xs => {

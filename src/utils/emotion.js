@@ -1,8 +1,12 @@
 // @flow
 import { train, predict } from 'utils/regression';
-import type { Position, Parameters, EmotionPrediction, EmotionModel } from 'types/clmtrackr';
+import { LogisticRegression } from 'machine_learning';
+import * as emotion from 'fixtures/emotion-data';
+import type { Position, Parameters } from 'types/clmtrackr';
+import type { EmotionPrediction } from 'types/emotion';
+import type { Matrix } from 'types/math';
 
-export const calcEmotionParameter: (_:Position) => Array<number>
+const calcEmotionParameter: (_:Position) => Parameters
 = pos => [
   (pos[26][1] - pos[24][1]) / 1, // left eye height
   (pos[50][0] - pos[44][0]) / 3, // mouse width
@@ -14,13 +18,41 @@ export const calcEmotionParameter: (_:Position) => Array<number>
   Math.abs(pos[33][0] - pos[62][0]), // nose rad
 ];
 
-    const model = train([
-      ...emotion.plain,
-      ...emotion.happy,
-    ])([
-      ...emotion.plain.map(() => [0, 1]),
-      ...emotion.happy.map(() => [1, 0]),
-    ]);
+const createModel: (_:Matrix) => LogisticRegression
+= parameters => train([
+  ...emotion.plain,
+  ...parameters,
+])([
+  ...emotion.plain.map(() => [0, 1]),
+  ...parameters.map(() => [1, 0]),
+]);
+
+const happyModel = createModel(emotion.happy);
+const angryModel = createModel(emotion.angry);
+const unhappyModel = createModel(emotion.unhappy);
+const supriseModel = createModel(emotion.suprise);
+
+export const predictEmotions: (_:Position) => Array<EmotionPrediction>
+= position => [
+  {
+    name: 'happy',
+    value: predict(calcEmotionParameter(position))(happyModel)[0],
+  },
+  {
+    name: 'angry',
+    value: predict(calcEmotionParameter(position))(angryModel)[0],
+  },
+  {
+    name: 'unhappy',
+    value: predict(calcEmotionParameter(position))(unhappyModel)[0],
+  },
+  {
+    name: 'suprise',
+    value: predict(calcEmotionParameter(position))(supriseModel)[0],
+  },
+];
+
+/*
     const { webgazer } = this.props;
     const clm = webgazer.getTracker().clm;
     webgazer.setGazeListener(() => {
@@ -30,3 +62,4 @@ export const calcEmotionParameter: (_:Position) => Array<number>
         console.log(predict(parameters)(model));
       }
     });
+*/

@@ -1,6 +1,6 @@
 // @flow
 import type { WebGazer, Adjuster } from 'types/webgazer';
-import type { Rectangle } from 'types/canvas';
+import type { Rectangle } from 'types/math';
 
 const symbolAdjuster = Symbol();
 

@@ -2,16 +2,16 @@
 import React from 'react';
 import classnames from 'classnames';
 import style from 'styles/components/EmotionGraph.css';
-import type { EmotionPrediction } from 'types/clmtrackr';
+import type { EmotionPrediction } from 'types/emotion';
 
 type Props = {
   className?: string,
-  prediction: EmotionPrediction,
+  predictions: Array<EmotionPrediction>,
 };
 
-const EmotionGraph = ({ className, prediction }: Props) => (
+const EmotionGraph = ({ className, predictions }: Props) => (
   <div className={classnames(className, style.my)}>
-    {prediction.map(x => <div key={x.emotion}>{x.emotion}: {x.value}</div>)}
+    {predictions.map(x => <div key={x.name}>{x.name}: {x.value}</div>)}
   </div>
 );
 

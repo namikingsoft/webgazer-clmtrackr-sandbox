@@ -2,17 +2,17 @@
 import React, { Component } from 'react';
 import EmotionGraph from 'components/EmotionGraph';
 import EmotionDistribute from 'components/EmotionDistribute';
-import { calcEmotionParameter } from 'utils/clmtrackr';
-import { train, predict } from 'utils/regression';
+import { predictEmotions } from 'utils/emotion';
+// import { train, predict } from 'utils/regression';
 import * as emotion from 'fixtures/emotion-data';
 import type { WebGazer } from 'types/webgazer';
-import type { EmotionPrediction } from 'types/clmtrackr';
+import type { EmotionPrediction } from 'types/emotion';
 import { startWebGazer, showAdjuster } from 'utils/webgazer';
 
 class App extends Component {
   state: {
     webgazer?: WebGazer;
-    emotionPrediction?: EmotionPrediction,
+    emotionPredictions?: Array<EmotionPrediction>,
     screenWidth?: number,
     screenHeight?: number,
   } = {};
@@ -32,22 +32,19 @@ class App extends Component {
     showAdjuster(webgazer);
     const clm = webgazer.getTracker().clm;
     webgazer.setGazeListener(() => {
-      const parameters = clm.getCurrentParameters();
-      this.setState({
-        // emotionPrediction: classifier.predictMean(parameters),
-      });
+      const position = clm.getCurrentPosition();
+      if (position) {
+        this.setState({
+          emotionPredictions: predictEmotions(position),
+        });
+      }
     });
     return webgazer;
   };
 
-  debugParameter: (_:Event) => (_:WebGazer) => void
-  = () => webgazer => {
-    const clm = webgazer.getTracker().clm;
-    console.log(clm.getCurrentParameters());
-  };
-
-  test = () => {
-    const { webgazer } = this.props;
+  test: (_:WebGazer) => void
+  = webgazer => {
+    /*
     const clm = webgazer.getTracker().clm;
     const xss = [];
     const yss = [];
@@ -62,15 +59,16 @@ class App extends Component {
         console.log(model);
       }
     });
+    */
   };
 
   render = () => {
-    const { webgazer, emotionPrediction } = this.state;
+    const { webgazer, emotionPredictions } = this.state;
     return (
       <div>
-        <EmotionGraph prediction={emotionPrediction || []} />
+        <EmotionGraph predictions={emotionPredictions || []} />
         <EmotionDistribute xLength={100} yLength={100} />
-        <button onClick={e => this.debugParameter(e)(webgazer)}>test</button>
+        <button onClick={e => this.test(webgazer)}>test</button>
       </div>
     );
   };
