@@ -80,6 +80,8 @@ class App extends Component {
       ...this.state,
       screenWidth,
       screenHeight,
+      xLength,
+      yLength,
       emotionTable,
     });
   };
