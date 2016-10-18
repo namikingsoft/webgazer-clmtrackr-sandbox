@@ -4,4 +4,13 @@
   position: absolute;
   bottom: 0;
   left: 0;
+  width: 50%;
+  z-index: 65535;
+
+  &Graph {
+    background-color: #c00;
+    font-size: 9px;
+    margin: 10px;
+    padding: 5px;
+  }
 }
