@@ -20,3 +20,7 @@ organization={AAAI}
 About clmtrackr
 --------------------------------------------------
 https://github.com/auduno/clmtrackr
+
+Lisence
+--------------------------------------------------
+`GLP v3` fits in WebGazer
