@@ -1,7 +1,7 @@
 @import '../variables';
 
 .my {
-  position: absolute;
+  position: fixed;
   pointer-events: none;
   z-index: 65535;
 }
