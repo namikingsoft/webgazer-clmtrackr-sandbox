@@ -23,4 +23,4 @@ https://github.com/auduno/clmtrackr
 
 Lisence
 --------------------------------------------------
-`GLP v3` fits in WebGazer
+`GPL v3` fits in WebGazer
